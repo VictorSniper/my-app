@@ -1,161 +1,69 @@
 <template>
-  <page-edit
-    :formData="currentApi"
+  <page-details
+    :detailsApi="detailsApi"
     :formConfig="fieldsConfig"
     :inline="true"
-  ></page-edit>
+  ></page-details>
 </template>
 <script>
-import PageEdit from "@/components/PageEdit";
-import { defineComponent, ref, reactive, toRefs } from "vue";
+import PageDetails from "@/components/PageDetails";
+import { useRouter } from "vue-router";
+import {
+  defineComponent,
+  toRaw,
+  reactive,
+  toRefs,
+  getCurrentInstance,
+  onMounted,
+} from "vue";
 export default defineComponent({
   components: {
-    PageEdit,
+    PageDetails,
   },
   setup() {
-    const val = ref(null);
+    const router = useRouter();
+    const { proxy } = getCurrentInstance();
     const state = reactive({
-      currentApi: {
-        currentPage: 1,
-        pageSize: 10,
-        createUser: "",
-        startTime: "",
-        endTime: "",
-        createUserId: "",
-      },
+      detailsApi: {},
       //搜索表单配置
       fieldsConfig: [
         {
-          name: "createUser",
-          fieldType: "text-input",
-          attrs: {
-            descriptionsLabel: "姓名",
-            placeholder: "请填写",
-            type: "text", //表单类型
-            clearable: true,
-            onInputEvent: (val) => {
-              state.currentApi.createUser = val;
-            },
-          },
+          val: "createUser",
+          descriptionsLabel: "姓名",
         },
         {
-          name: "createUserId",
-          fieldType: "text-input",
-          attrs: {
-            descriptionsLabel: "推荐成语",
-            placeholder: "请填写",
-            type: "text", //表单类型
-            clearable: true,
-            onInputEvent: (val) => {
-              state.currentApi.createUserId = val;
-            },
-          },
+          val: "title",
+          descriptionsLabel: "标题",
         },
-                {
-          name: "createUserId",
-          fieldType: "text-input",
-          attrs: {
-            descriptionsLabel: "推荐成语",
-            placeholder: "请填写",
-            type: "text", //表单类型
-            clearable: true,
-            onInputEvent: (val) => {
-              state.currentApi.createUserId = val;
-            },
-          },
+        {
+          val: "date",
+          descriptionsLabel: "日期",
         },
-                {
-          name: "createUserId",
-          fieldType: "text-input",
-          attrs: {
-            descriptionsLabel: "推荐成语",
-            placeholder: "请填写",
-            type: "text", //表单类型
-            clearable: true,
-            onInputEvent: (val) => {
-              state.currentApi.createUserId = val;
-            },
-          },
+        {
+          val: "createUserId",
+          descriptionsLabel: "推荐成语",
         },
-                {
-          name: "createUserId",
-          fieldType: "text-input",
-          attrs: {
-            descriptionsLabel: "推荐成语",
-            placeholder: "请填写",
-            type: "text", //表单类型
-            clearable: true,
-            onInputEvent: (val) => {
-              state.currentApi.createUserId = val;
-            },
-          },
-        },
-                {
-          name: "createUserId",
-          fieldType: "text-input",
-          attrs: {
-            descriptionsLabel: "推荐成语",
-            placeholder: "请填写",
-            type: "text", //表单类型
-            clearable: true,
-            onInputEvent: (val) => {
-              state.currentApi.createUserId = val;
-            },
-          },
-        },
-                {
-          name: "createUserId",
-          fieldType: "text-input",
-          attrs: {
-            descriptionsLabel: "推荐成语",
-            placeholder: "请填写",
-            type: "text", //表单类型
-            clearable: true,
-            onInputEvent: (val) => {
-              state.currentApi.createUserId = val;
-            },
-          },
-        },
-                {
-          name: "createUserId",
-          fieldType: "text-input",
-          attrs: {
-            descriptionsLabel: "推荐成语",
-            placeholder: "请填写",
-            type: "text", //表单类型
-            clearable: true,
-            onInputEvent: (val) => {
-              state.currentApi.createUserId = val;
-            },
-          },
-        },
-                {
-          name: "createUserId",
-          fieldType: "text-input",
-          attrs: {
-            descriptionsLabel: "推荐成语",
-            placeholder: "请填写",
-            type: "text", //表单类型
-            clearable: true,
-            onInputEvent: (val) => {
-              state.currentApi.createUserId = val;
-            },
-          },
+        {
+          val: "content",
+          descriptionsLabel: "内容",
         },
       ],
     });
+    onMounted(() => {
+      getList();
+    });
+    const getList = () => {
+      let params = router.currentRoute.value.query;
+      proxy.$api.getRedBlackList(toRaw(params)).then((res) => {
+        if (res.code === "0") {
+          state.detailsApi = res.data.list[params.id - 1];
+        }
+      });
+    };
     return {
       ...toRefs(state),
-      val,
+      getList,
     };
   },
 });
 </script>
-
-<style lang="scss" scoped>
-.page-content-details {
-  background-color: white;
-  padding: 15px;
-  border-radius: 4px;
-}
-</style>

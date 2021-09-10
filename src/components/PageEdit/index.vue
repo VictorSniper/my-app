@@ -1,19 +1,21 @@
 <template>
   <div class="page-content-details">
-    <el-form
-      :model="formData"
-      :hide-required-asterisk="true"
-      ref="formRef"
-    >
-      <el-descriptions class="margin-top" direction="vertical" size="medium" title="一叶障目" border :column="5">
+    <el-form :model="formData" :hide-required-asterisk="true" ref="formRef">
+      <el-descriptions
+        class="margin-top"
+        size="medium"
+        title="一叶障目"
+        border
+        :column="4"
+      >
         <template #extra>
           <el-button type="primary" size="small">返回</el-button>
         </template>
-              <template v-for="field in formConfig" :key="field.name">
-        <el-descriptions-item>
-          <template #label>
-            {{field.attrs.descriptionsLabel}}
-          </template>
+        <template v-for="field in formConfig" :key="field.name">
+          <el-descriptions-item>
+            <template #label>
+              {{ field.attrs.descriptionsLabel }}
+            </template>
             <component
               :is="field.fieldType"
               :width="field.width"
@@ -23,8 +25,8 @@
               v-bind="field.attrs"
               :ref="field.name"
             />
-        </el-descriptions-item>
-                 </template>
+          </el-descriptions-item>
+        </template>
       </el-descriptions>
     </el-form>
   </div>
@@ -42,9 +44,7 @@ export default defineComponent({
     TextDatePicker,
     TextDatePickerStartEnd,
   },
-  props: ["formConfig", "formData", "apiUrl"],
-  setup() {
-  },
+  props: ["formConfig", "formData"],
 });
 </script>
 <style lang="scss" scoped>
@@ -52,8 +52,8 @@ export default defineComponent({
   background-color: white;
   padding: 15px;
   border-radius: 4px;
-  .el-descriptions__body{
-    .el-form-item{
+  .el-descriptions__body {
+    .el-form-item {
       margin-bottom: unset;
     }
   }

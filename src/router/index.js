@@ -225,7 +225,22 @@ const routes = [
                 key: "3-2-1",
                 component: () => import("@/views/article/list/details"),
                 meta: {
-                  title: "文章详情1",
+                  title: "文章详情",
+                  roles: ["admin"],
+                  type: "item",
+                  hidden: true,
+                  icon: "",
+                  index: "/article/list",
+                },
+              },
+              {
+                path: "/article/list/edit",
+                name: "文章编辑",
+                index: "articleListEdit",
+                key: "3-2-2",
+                component: () => import("@/views/article/list/edit"),
+                meta: {
+                  title: "文章编辑",
                   roles: ["admin"],
                   type: "item",
                   hidden: true,

@@ -187,7 +187,7 @@ export default defineComponent({
                 text: "编辑",
                 type: "text",
                 event: (row) => {
-                  eidt(row, true);
+                  eidt(row);
                 },
               },
               {
@@ -217,9 +217,11 @@ export default defineComponent({
         query: { id: id },
       });
     };
-    const eidt = (row, bool) => {
-      console.log(row);
-      console.log(bool);
+    const eidt = ({id}) => {
+      router.push({
+        path: `/article/list/edit`,
+        query: { id: id },
+      });
     };
     //批量删除/单个删除
     const del = (val) => {
