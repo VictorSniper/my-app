@@ -1,11 +1,11 @@
 <template>
   <page-table
     :params="searchFormData"
-    :multipleSelection="multipleSelection"
     :config="config"
     :show="true"
     apiUrl="getRedBlackList"
     ref="tableRef"
+    @batchDel="del"
   ></page-table>
 </template>
 <script>
@@ -53,13 +53,27 @@ export default defineComponent({
               },
             },
           },
-                  {
+                    {
+            name: "classTime",
+            fieldType: "text-date-picker",
+            width: "auto",
+            attrs: {
+              type: "text",
+              label: "课程时间",
+              labelWidth: "70px",
+              placeholder: "请填写",
+              dateChange: (val) => {
+                state.searchFormData.classTime = val;
+              },
+            },
+          },
+          {
             name: "createUserId",
             fieldType: "text-input",
             width: "auto",
             attrs: {
               type: "text",
-              label: "姓名",
+              label: "金额",
               labelWidth: "40px",
               placeholder: "请填写",
               onInputEvent: (val) => {
@@ -67,49 +81,7 @@ export default defineComponent({
               },
             },
           },
-                  {
-            name: "createUserId",
-            fieldType: "text-input",
-            width: "auto",
-            attrs: {
-              type: "text",
-              label: "姓名",
-              labelWidth: "40px",
-              placeholder: "请填写",
-              onInputEvent: (val) => {
-                state.searchFormData.createUserId = val;
-              },
-            },
-          },
-                  {
-            name: "createUserId",
-            fieldType: "text-input",
-            width: "auto",
-            attrs: {
-              type: "text",
-              label: "姓名",
-              labelWidth: "40px",
-              placeholder: "请填写",
-              onInputEvent: (val) => {
-                state.searchFormData.createUserId = val;
-              },
-            },
-          },
-                  {
-            name: "createUserId",
-            fieldType: "text-input",
-            width: "auto",
-            attrs: {
-              type: "text",
-              label: "姓名",
-              labelWidth: "40px",
-              placeholder: "请填写",
-              onInputEvent: (val) => {
-                state.searchFormData.createUserId = val;
-              },
-            },
-          },
-                  {
+          {
             name: "createUserId",
             fieldType: "text-input",
             width: "auto",
@@ -124,16 +96,44 @@ export default defineComponent({
             },
           },
           {
-            name: "classTime",
-            fieldType: "text-date-picker",
+            name: "createUserId",
+            fieldType: "text-input",
             width: "auto",
             attrs: {
               type: "text",
-              label: "课程时间",
-              labelWidth: "86px",
+              label: "姓名",
+              labelWidth: "40px",
               placeholder: "请填写",
-              dateChange: (val) => {
-                state.searchFormData.classTime = val;
+              onInputEvent: (val) => {
+                state.searchFormData.createUserId = val;
+              },
+            },
+          },
+          {
+            name: "createUserId",
+            fieldType: "text-input",
+            width: "auto",
+            attrs: {
+              type: "text",
+              label: "姓名",
+              labelWidth: "40px",
+              placeholder: "请填写",
+              onInputEvent: (val) => {
+                state.searchFormData.createUserId = val;
+              },
+            },
+          },
+          {
+            name: "createUserId",
+            fieldType: "text-input",
+            width: "auto",
+            attrs: {
+              type: "text",
+              label: "姓名",
+              labelWidth: "70px",
+              placeholder: "请填写",
+              onInputEvent: (val) => {
+                state.searchFormData.createUserId = val;
               },
             },
           },
@@ -155,9 +155,9 @@ export default defineComponent({
             align: "left",
           },
           {
-            props: "createTime",
+            props: "updateTime",
             label: "课程时间",
-            custom: "createTime",
+            custom: "updateTime",
             align: "left",
           },
           {
@@ -194,37 +194,48 @@ export default defineComponent({
         ],
       },
       tableData: [],
-      multipleSelection: [],
     });
     const eidt = (row, bool) => {
       console.log(row);
       console.log(bool);
     };
-    //删除
-    const del = (id) => {
+    //批量删除/单个删除
+    const del = (val) => {
+      let params = Array.isArray(val)
+        ? val.map((item) => item.id).toString()
+        : val;
       const table = unref(tableRef);
-      ElMessageBox.confirm("该课程是否删除?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-        beforeClose: (action, instance, done) => {
-          if (action === "confirm") {
-            instance.confirmButtonLoading = true;
-            instance.confirmButtonText = "删除中...";
-            done();
-            proxy.$api.districtDdelete({ id: id }).then((res) => {
-              if (res.code === "0") {
-                instance.confirmButtonLoading = false;
-                table.getList();
-              }
-            });
-          } else {
-            done();
-          }
-        },
-      }).then((action) => {
-        console.log(action);
-      });
+      ElMessageBox.confirm(
+        Array.isArray(val) ? "您是否需要批量删除?" : "您是否需要删除?",
+        "提示",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+          beforeClose: (action, instance, done) => {
+            if (action === "confirm") {
+              instance.confirmButtonLoading = true;
+              instance.confirmButtonText = "删除中...";
+              done();
+              proxy.$api.districtDdelete({ id: params }).then((res) => {
+                if (res.code === "0") {
+                  instance.confirmButtonLoading = false;
+                  table.getList();
+                  table.handleSelectCancel();
+                }
+              });
+            } else {
+              done();
+            }
+          },
+        }
+      )
+        .then((action) => {
+          console.log(action);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     };
     return {
       ...toRefs(state),

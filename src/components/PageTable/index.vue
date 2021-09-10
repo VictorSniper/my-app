@@ -6,7 +6,7 @@
     class="page-content-search"
     :class="{ 'page-content-search-isCollapse': isCollapse }"
   >
-            <el-row  class="page-content-search-row">
+    <el-row class="page-content-search-row">
       <el-col :span="20">
         <el-form
           :model="params"
@@ -28,11 +28,11 @@
         </el-form>
       </el-col>
       <el-col :span="4">
-     <div class="search-handle">
-          <el-button @click="handleReset" icon="el-icon-refresh"
+        <div class="search-handle">
+          <el-button @click="handleReset" size="mini" icon="el-icon-refresh"
             >重置</el-button
           >
-          <el-button @click="handleSearch" icon="el-icon-search" type="primary"
+          <el-button @click="handleSearch"  size="mini" icon="el-icon-search" type="primary"
             >查询</el-button
           >
           <el-button
@@ -40,54 +40,66 @@
             v-if="show"
             @click="toggle"
             :icon="!isCollapse ? 'el-icon-arrow-down' : 'el-icon-arrow-up'"
-            style="direction: rtl;"
+            style="direction: rtl"
             >{{ !isCollapse ? "展开" : "收起" }}</el-button
           >
         </div>
       </el-col>
     </el-row>
-    </div>
-    <div class="page-content-table">
-      <el-table
-        :data="tableData"
-        v-loading="loading"
-        ref="multipleTable"
-        @selection-change="handleSelectionChange"
-        :row-class-name="tableRowClassName"
-        v-bind="config.tableConfig"
-      >
-        <template v-for="(item, index) in config.tableDataColumn" :key="index">
-          <el-table-column v-bind="item" :prop="item.props">
-            <template v-if="item.props === 'handle'" #default="scope">
-              <el-button
-                v-for="(handleItem, ind) in item.handleEvent"
-                :key="ind"
-                @click="customHandle(handleItem, scope.row)"
-                :type="handleItem.type"
-                >{{ handleItem.text }}
-              </el-button>
-            </template>
-            <template v-else-if="item.type === 'expand'" #default="scope">
-              <slot :scop="scope"></slot>
-            </template>
-          </el-table-column>
-        </template>
-        <template #empty>
-          <el-empty description="暂无数据"></el-empty>
-        </template>
-      </el-table>
-    </div>
-    <el-pagination
-      class="pagination-right"
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :page-sizes="[20, 40, 60, 80, 100]"
-      layout="total, sizes, prev, pager, next, jumper"
-      :page-size="20"
-      :pager-count="11"
-      :total="totalCount"
+  </div>
+  <div class="page-content-table">
+    <el-alert
+      v-if="indexs.length != 0"
+      :title="`您已选择${indexs.length}项`"
+      type="primary"
+      close-text="取消选择"
+      @close="handleSelectCancel"
     >
-    </el-pagination>
+    </el-alert>
+    <el-table
+      :data="tableData"
+      v-loading="loading"
+      ref="multipleTable"
+      @selection-change="handleSelectionChange"
+      :row-class-name="tableRowClassName"
+      v-bind="config.tableConfig"
+    >
+      <template v-for="(item, index) in config.tableDataColumn" :key="index">
+        <el-table-column v-bind="item" :prop="item.props">
+          <template v-if="item.props === 'handle'" #default="scope">
+            <el-button
+              v-for="(handleItem, ind) in item.handleEvent"
+              :key="ind"
+              @click="customHandle(handleItem, scope.row)"
+              :type="handleItem.type"
+              >{{ handleItem.text }}
+            </el-button>
+          </template>
+          <template v-else-if="item.type === 'expand'" #default="scope">
+            <slot :scop="scope"></slot>
+          </template>
+        </el-table-column>
+      </template>
+      <template #empty>
+        <el-empty description="暂无数据"></el-empty>
+      </template>
+    </el-table>
+  </div>
+  <el-pagination
+    class="pagination-right"
+    @size-change="handleSizeChange"
+    @current-change="handleCurrentChange"
+    layout="total, sizes, prev, pager, next, jumper"
+    :total="totalCount"
+  >
+  </el-pagination>
+  <div v-if="indexs.length != 0" class="page-table-footer-bar">
+    <div class="footer-bar-left">footer-bar-left</div>
+    <div>
+      <el-button @click="dateSelectChange">批量删除</el-button>
+      <el-button type="primary">批量下载</el-button>
+    </div>
+  </div>
 </template>
 <script>
 import TextInput from "@/components/BaseField/TextInput";
@@ -111,15 +123,9 @@ export default defineComponent({
     TextDatePicker,
     TextDatePickerStartEnd,
   },
-  props: [
-    "params",
-    "multipleSelection",
-    "apiUrl",
-    "show",
-    "config",
-  ],
-  emits: ["handleCancel", "handleSave"],
-  setup(props) {
+  props: ["params", "apiUrl", "show", "config"],
+  emits: ["batchDel"],
+  setup(props, { emit }) {
     const multipleTable = ref(null);
     const state = reactive({
       tableData: [],
@@ -133,9 +139,9 @@ export default defineComponent({
       },
       indexs: [],
     });
-    onMounted(()=>{
-        getList()
-    })
+    onMounted(() => {
+      getList();
+    });
     const formRef = ref(null);
     const isCollapse = ref(false);
     const { proxy } = getCurrentInstance();
@@ -168,14 +174,6 @@ export default defineComponent({
           state.totalCount = res.data.totalCount;
           state.tableData = res.data.list;
           state.loading = false;
-          const form = unref(multipleTable);
-          state.tableData.forEach((item) => {
-            props.multipleSelection.forEach((i) => {
-              if (item.id == i.id) {
-                form.toggleRowSelection(item, true);
-              }
-            });
-          });
         }
       });
     };
@@ -201,7 +199,6 @@ export default defineComponent({
       state.indexs = arr;
       state.multipleSelection = val;
     };
-  
     const customHandle = (currentHandle, row) => {
       currentHandle.event(row);
     };
@@ -209,6 +206,14 @@ export default defineComponent({
     const resetFields = () => {
       const form = unref(formRef);
       form.resetFields();
+    };
+    const handleSelectCancel = () => {
+      const form = unref(multipleTable);
+      form.clearSelection();
+      state.indexs = state.multipleSelection = [];
+    };
+    const dateSelectChange = () => {
+      emit("batchDel", state.multipleSelection);
     };
     return {
       ...toRefs(state),
@@ -220,9 +225,11 @@ export default defineComponent({
       handleSearch,
       handleReset,
       getList,
+      dateSelectChange,
       handleSizeChange,
       handleCurrentChange,
       handleSelectionChange,
+      handleSelectCancel,
       customHandle,
       resetFields,
     };
@@ -237,7 +244,6 @@ export default defineComponent({
   margin-bottom: 15px;
   overflow: hidden;
   height: 40px;
-
   .search-handle {
     text-align: right;
   }
@@ -252,26 +258,61 @@ export default defineComponent({
   overflow: auto;
   height: auto;
 }
-  .page-content-table {
-    background-color: white;
+.page-content-table {
+  background-color: white;
   padding: 15px;
   border-radius: 4px;
-    .header-row-class-name th {
-      background-color: #ebeef5;
-    }
-    .page-content-table-title {
-      line-height: 32px;
-    }
-    .page-content-table-handle {
-      text-align: right;
-    }
-    .page-content-table-handle button {
-      margin-left: 10px;
-      cursor: pointer;
-    }
-    .select-row {
-      background-color: rgba(159, 217, 255, 0.2);
-    }
+  .el-alert {
+    margin-bottom: 15px;
   }
-
+  .el-alert.is-light .el-alert__closebtn {
+    color: #1890ff;
+    text-decoration: none;
+    background-color: transparent;
+    outline: none;
+    cursor: pointer;
+    top: 16px;
+  }
+  .el-alert--primary {
+    background-color: #e6f7ff;
+    border: 1px solid #91d5ff;
+    padding: 12px 24px;
+  }
+  .header-row-class-name th {
+    background-color: #ebeef5;
+  }
+  .page-content-table-title {
+    line-height: 32px;
+  }
+  .page-content-table-handle {
+    text-align: right;
+  }
+  .page-content-table-handle button {
+    margin-left: 10px;
+    cursor: pointer;
+  }
+  .select-row {
+    background-color: rgba(159, 217, 255, 0.2);
+  }
+}
+.page-table-footer-bar {
+  width: calc(100% - 208px);
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0 24px;
+  line-height: 44px;
+  background: #fff;
+  border-top: 1px solid #f0f0f0;
+  box-shadow: 0 -6px 16px -8px rgb(0 0 0 / 8%), 0 -9px 28px 0 rgb(0 0 0 / 5%),
+    0 -12px 48px 16px rgb(0 0 0 / 3%);
+  transition: width 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+  .footer-bar-left {
+    flex: 1 1;
+  }
+}
 </style>

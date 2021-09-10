@@ -3,5 +3,5 @@ import '../element-variables.scss'
 import locale from 'element-plus/lib/locale/lang/zh-cn'
 
 export default (app) => {
-  app.use(ElementPlus, { locale, size: 'small', zIndex: 3000  })
+  app.use(ElementPlus, { locale, size: 'mini', zIndex: 3000  })
 }
