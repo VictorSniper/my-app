@@ -1,0 +1,129 @@
+.sider-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  height: 100%;
+  overflow: auto;
+  overflow-x: hidden;
+  box-shadow: 2px 0 8px 0 rgb(29 35 41 / 5%);
+}
+.layout-has-sider {
+  flex-direction: row;
+}
+.layout-header {
+  height: 60px;
+  padding: 0 50px;
+  color: rgba(0, 0, 0, 0.85);
+  line-height: 60px;
+  background: white;
+  box-shadow: 0 1px 4px rgb(0 21 41 / 8%);
+}
+.el-main {
+  margin: 15px;
+  padding: unset !important;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.pagination-right{
+    text-align: right;
+    padding:20px !important;
+    background-color: white;
+}
+.global-header-right {
+  display: flex;
+  float: right;
+  height: 60px;
+  margin-left: auto;
+  overflow: hidden;
+}
+.fold {
+  width: 182px;
+  overflow: hidden; flex: 0 0 182px;
+  transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) 0s;
+}
+.el-submenu .el-menu-item {
+
+   min-width: unset !important;
+}
+.el-menu--collapse{
+    overflow: hidden; flex: 0 0 64px;  
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1) 0s;
+}
+.el-breadcrumb {
+  background-color: white;
+  margin-bottom: 15px;
+  padding: 20px;
+  border-radius: 4px;
+}
+.router-link {
+  cursor: pointer;
+}
+.aside {
+  background-color: #001529;
+  .logo {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    cursor: pointer;
+    transition: padding 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 32px;
+      text-decoration: none;
+    }
+    img {
+      display: inline-block;
+      height: 32px;
+      vertical-align: middle;
+    }
+    h1 {
+      display: inline-block;
+      height: 32px;
+      margin: 0 0 0 12px;
+      color: #fff;
+      font-weight: 600;
+      font-size: 18px;
+      line-height: 32px;
+      vertical-align: middle;
+      animation: pro-layout-title-hide 0.3s;
+    }
+  }
+  .el-menu {
+    border-right: unset;
+  }
+  .sider-links {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    z-index: 10;
+    .sider-title-content {
+      color: hsla(0, 0%, 100%, 0.65);
+      font-size: 20px;
+      line-height: 48px;
+      padding-left: 20px;
+      cursor: pointer;
+      border-top: 1px solid rgba(0, 0, 0, 0.25);
+      &:hover {
+        color: white;
+      }
+    }
+  }
+  .el-menu-item:hover {
+    outline: 0 !important;
+    color: #409eff !important;
+  }
+  .el-menu-item.is-active {
+    color: #fff !important;
+    background: #1890ff !important;
+  }
+  .el-menu-item.is-active .el-icon-menu {
+    color: #fff !important;
+  }
+  .is-active .el-submenu__title i {
+    color: white;
+  }
+}
