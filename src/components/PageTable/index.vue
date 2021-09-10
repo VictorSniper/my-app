@@ -32,7 +32,11 @@
           <el-button @click="handleReset" size="mini" icon="el-icon-refresh"
             >重置</el-button
           >
-          <el-button @click="handleSearch"  size="mini" icon="el-icon-search" type="primary"
+          <el-button
+            @click="handleSearch"
+            size="mini"
+            icon="el-icon-search"
+            type="primary"
             >查询</el-button
           >
           <el-button
@@ -277,9 +281,6 @@ export default defineComponent({
     background-color: #e6f7ff;
     border: 1px solid #91d5ff;
     padding: 12px 24px;
-  }
-  .header-row-class-name th {
-    background-color: #ebeef5;
   }
   .page-content-table-title {
     line-height: 32px;

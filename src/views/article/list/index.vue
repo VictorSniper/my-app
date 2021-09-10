@@ -1,16 +1,21 @@
 <template>
-  <page-table
-    :params="searchFormData"
-    :config="config"
-    :show="true"
-    apiUrl="getRedBlackList"
-    ref="tableRef"
-    @batchDel="del"
-  ></page-table>
+  <div v-if="!isTrue">
+    <page-table
+      :params="searchFormData"
+      :config="config"
+      :show="true"
+      apiUrl="getRedBlackList"
+      ref="tableRef"
+      @batchDel="del"
+    ></page-table>
+  </div>
+  <router-view></router-view>
 </template>
 <script>
 import { ElMessageBox } from "element-plus";
 import PageTable from "@/components/PageTable";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 import {
   defineComponent,
   getCurrentInstance,
@@ -18,12 +23,16 @@ import {
   toRefs,
   ref,
   unref,
+  computed,
 } from "vue";
 export default defineComponent({
   components: {
     PageTable,
   },
   setup() {
+    const store = useStore();
+    const router = useRouter();
+    const isTrue = computed(() => store.state.isTrue);
     const { proxy } = getCurrentInstance();
     const tableRef = ref(null);
     const state = reactive({
@@ -53,7 +62,7 @@ export default defineComponent({
               },
             },
           },
-                    {
+          {
             name: "classTime",
             fieldType: "text-date-picker",
             width: "auto",
@@ -174,11 +183,18 @@ export default defineComponent({
             label: "操作",
             align: "right",
             handleEvent: [
-              {
+                            {
                 text: "编辑",
                 type: "text",
                 event: (row) => {
                   eidt(row, true);
+                },
+              },
+              {
+                text: "详情",
+                type: "text",
+                event: (row) => {
+                  bindleView(row);
                 },
               },
               {
@@ -195,6 +211,12 @@ export default defineComponent({
       },
       tableData: [],
     });
+    const bindleView = ({id}) => {
+      router.push({
+        path: `/article/list/details`,
+        query: { id: id },
+      });
+    };
     const eidt = (row, bool) => {
       console.log(row);
       console.log(bool);
@@ -239,7 +261,9 @@ export default defineComponent({
     };
     return {
       ...toRefs(state),
+      isTrue,
       tableRef,
+      bindleView,
       eidt,
       del,
     };
