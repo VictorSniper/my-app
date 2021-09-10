@@ -3,18 +3,15 @@
     <el-form
       :model="formData"
       :hide-required-asterisk="true"
-      :inline="inline"
       ref="formRef"
-      :label-position="labelPosition"
     >
-      <el-descriptions class="margin-top" title="一叶障目" :column="5" border>
+      <el-descriptions class="margin-top" direction="vertical" size="medium" title="一叶障目" border :column="5">
         <template #extra>
           <el-button type="primary" size="small">返回</el-button>
         </template>
               <template v-for="field in formConfig" :key="field.name">
         <el-descriptions-item>
           <template #label>
-            <i class="el-icon-user"></i>
             {{field.attrs.descriptionsLabel}}
           </template>
             <component
@@ -55,5 +52,10 @@ export default defineComponent({
   background-color: white;
   padding: 15px;
   border-radius: 4px;
+  .el-descriptions__body{
+    .el-form-item{
+      margin-bottom: unset;
+    }
+  }
 }
 </style>
