@@ -1,37 +1,28 @@
 <template>
   <page-edit
-    :formData="currentApi"
-    :formConfig="fieldsConfig"
-    :inline="true"
+    :params="params"
+    :config="config"
+    apiUrl="getRedBlackList"
+    @finish="finish"
   ></page-edit>
 </template>
 <script>
 import PageEdit from "@/components/PageEdit";
-import { useRouter } from "vue-router";
-import {
-  defineComponent,
-  toRaw,
-  reactive,
-  toRefs,
-  getCurrentInstance,
-  onMounted,
-} from "vue";
+import { defineComponent, reactive, toRefs } from "vue";
 export default defineComponent({
   components: {
     PageEdit,
   },
   setup() {
-    const router = useRouter();
-    const { proxy } = getCurrentInstance();
     const state = reactive({
-      currentApi: {
+      params: {
         createUser: "",
         title: "",
         endTime: "",
         createUserId: "",
       },
       //搜索表单配置
-      fieldsConfig: [
+      config: [
         {
           name: "createUser",
           fieldType: "text-input",
@@ -41,7 +32,7 @@ export default defineComponent({
             type: "text", //表单类型
             clearable: true,
             onInputEvent: (val) => {
-              state.currentApi.createUser = val;
+              state.params.createUser = val;
             },
           },
         },
@@ -54,7 +45,7 @@ export default defineComponent({
             type: "text", //表单类型
             clearable: true,
             onInputEvent: (val) => {
-              state.currentApi.createUserId = val;
+              state.params.createUserId = val;
             },
           },
         },
@@ -67,7 +58,7 @@ export default defineComponent({
             type: "text", //表单类型
             clearable: true,
             onInputEvent: (val) => {
-              state.currentApi.createUserId = val;
+              state.params.createUserId = val;
             },
           },
         },
@@ -80,7 +71,7 @@ export default defineComponent({
             type: "text", //表单类型
             clearable: true,
             onInputEvent: (val) => {
-              state.currentApi.createUserId = val;
+              state.params.createUserId = val;
             },
           },
         },
@@ -93,7 +84,7 @@ export default defineComponent({
             type: "text", //表单类型
             clearable: true,
             onInputEvent: (val) => {
-              state.currentApi.createUserId = val;
+              state.params.createUserId = val;
             },
           },
         },
@@ -106,7 +97,7 @@ export default defineComponent({
             type: "text", //表单类型
             clearable: true,
             onInputEvent: (val) => {
-              state.currentApi.createUserId = val;
+              state.params.createUserId = val;
             },
           },
         },
@@ -119,7 +110,7 @@ export default defineComponent({
             type: "text", //表单类型
             clearable: true,
             onInputEvent: (val) => {
-              state.currentApi.createUserId = val;
+              state.params.createUserId = val;
             },
           },
         },
@@ -132,7 +123,7 @@ export default defineComponent({
             type: "text", //表单类型
             clearable: true,
             onInputEvent: (val) => {
-              state.currentApi.createUserId = val;
+              state.params.createUserId = val;
             },
           },
         },
@@ -145,26 +136,18 @@ export default defineComponent({
             type: "textarea", //表单类型
             clearable: true,
             onInputEvent: (val) => {
-              state.currentApi.createUserId = val;
+              state.params.createUserId = val;
             },
           },
         },
       ],
     });
-    onMounted(() => {
-      getList();
-    });
-    const getList = () => {
-      let params = router.currentRoute.value.query;
-      proxy.$api.getRedBlackList(toRaw(params)).then((res) => {
-        if (res.code === "0") {
-          state.currentApi = res.data.list[params.id - 1];
-        }
-      });
+    const finish = (val) => {
+      state.params = val.list[0];
     };
     return {
       ...toRefs(state),
-      getList,
+      finish,
     };
   },
 });

@@ -6,8 +6,8 @@
     class="page-content-search"
     :class="{ 'page-content-search-isCollapse': isCollapse }"
   >
-    <el-row class="page-content-search-row">
-      <el-col :span="20">
+    <div class="page-content-search-row">
+      <div class="search-left">
         <el-form
           :model="params"
           :hide-required-asterisk="true"
@@ -26,8 +26,8 @@
             />
           </template>
         </el-form>
-      </el-col>
-      <el-col :span="4">
+      </div>
+      <div class="search-right">
         <div class="search-handle">
           <el-button @click="handleReset" size="mini" icon="el-icon-refresh"
             >重置</el-button
@@ -48,8 +48,8 @@
             >{{ !isCollapse ? "展开" : "收起" }}</el-button
           >
         </div>
-      </el-col>
-    </el-row>
+      </div>
+    </div>
   </div>
   <div class="page-content-table">
     <el-alert
@@ -100,8 +100,8 @@
   <div v-if="indexs.length != 0" class="page-table-footer-bar">
     <div class="footer-bar-left">footer-bar-left</div>
     <div>
-      <el-button @click="dateSelectChange">批量删除</el-button>
-      <el-button type="primary">批量下载</el-button>
+      <el-button @click="getMultipleSelection(true)">批量删除</el-button>
+      <el-button @click="getMultipleSelection(false)" type="primary">批量下载</el-button>
     </div>
   </div>
 </template>
@@ -128,7 +128,7 @@ export default defineComponent({
     TextDatePickerStartEnd,
   },
   props: ["params", "apiUrl", "show", "config"],
-  emits: ["batchDel"],
+  emits: ["batchDel","exports"],
   setup(props, { emit }) {
     const multipleTable = ref(null);
     const state = reactive({
@@ -216,8 +216,8 @@ export default defineComponent({
       form.clearSelection();
       state.indexs = state.multipleSelection = [];
     };
-    const dateSelectChange = () => {
-      emit("batchDel", state.multipleSelection);
+    const getMultipleSelection = (bool) => {
+      bool?emit("batchDel", state.multipleSelection):emit ("exports",state.multipleSelection)
     };
     return {
       ...toRefs(state),
@@ -229,7 +229,7 @@ export default defineComponent({
       handleSearch,
       handleReset,
       getList,
-      dateSelectChange,
+      getMultipleSelection,
       handleSizeChange,
       handleCurrentChange,
       handleSelectionChange,
@@ -255,7 +255,21 @@ export default defineComponent({
     margin-bottom: 15px;
   }
   .page-content-search-row {
+    box-sizing: border-box;
     margin-bottom: unset;
+    display: flex;
+    .search-left {
+      flex-direction: row;
+
+      flex-basis: auto;
+      box-sizing: border-box;
+      min-width: 0;
+      flex-shrink: 1;
+    }
+    .search-right {
+      overflow: hidden;
+      flex: 0 0 210px;
+    }
   }
 }
 .page-content-search-isCollapse {

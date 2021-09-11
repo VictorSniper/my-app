@@ -7,6 +7,7 @@
       apiUrl="getRedBlackList"
       ref="tableRef"
       @batchDel="del"
+      @exports="exports"
     ></page-table>
   </div>
   <router-view></router-view>
@@ -139,7 +140,7 @@ export default defineComponent({
             attrs: {
               type: "text",
               label: "姓名",
-              labelWidth: "70px",
+              labelWidth: "40px",
               placeholder: "请填写",
               onInputEvent: (val) => {
                 state.searchFormData.createUserId = val;
@@ -183,7 +184,7 @@ export default defineComponent({
             label: "操作",
             align: "right",
             handleEvent: [
-                            {
+              {
                 text: "编辑",
                 type: "text",
                 event: (row) => {
@@ -211,18 +212,22 @@ export default defineComponent({
       },
       tableData: [],
     });
-    const bindleView = ({id}) => {
+    const bindleView = ({ id }) => {
       router.push({
         path: `/article/list/details`,
         query: { id: id },
       });
     };
-    const eidt = ({id}) => {
+    const eidt = ({ id }) => {
       router.push({
         path: `/article/list/edit`,
         query: { id: id },
       });
     };
+    //导出
+    const exports = ()=>{
+      console.log('批量导出')
+    }
     //批量删除/单个删除
     const del = (val) => {
       let params = Array.isArray(val)
@@ -268,6 +273,7 @@ export default defineComponent({
       bindleView,
       eidt,
       del,
+      exports,
     };
   },
 });

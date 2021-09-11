@@ -1,6 +1,6 @@
 <template>
   <div class="page-content-details">
-    <el-form :model="formData" :hide-required-asterisk="true" ref="formRef">
+    <el-form :model="params" :hide-required-asterisk="true" ref="formRef">
       <el-descriptions
         class="margin-top"
         size="medium"
@@ -11,7 +11,7 @@
         <template #extra>
           <el-button type="primary" size="small">返回</el-button>
         </template>
-        <template v-for="field in formConfig" :key="field.name">
+        <template v-for="field in config" :key="field.name">
           <el-descriptions-item>
             <template #label>
               {{ field.attrs.descriptionsLabel }}
@@ -21,7 +21,7 @@
               :width="field.width"
               :name="field.name"
               :options="field.options"
-              :value="formData[field.name]"
+              :value="params[field.name]"
               v-bind="field.attrs"
               :ref="field.name"
             />
@@ -36,7 +36,9 @@ import TextInput from "@/components/BaseField/TextInput";
 import TextSelect from "@/components/BaseField/TextSelect";
 import TextDatePicker from "@/components/BaseField/TextDatePicker";
 import TextDatePickerStartEnd from "@/components/BaseField/TextDatePickerStartEnd";
-import { defineComponent } from "vue";
+import { defineComponent, getCurrentInstance, onMounted, toRaw } from "vue";
+import { useRouter } from "vue-router";
+import { ElLoading } from "element-plus";
 export default defineComponent({
   components: {
     TextInput,
@@ -44,7 +46,33 @@ export default defineComponent({
     TextDatePicker,
     TextDatePickerStartEnd,
   },
-  props: ["formConfig", "formData"],
+  props: ["config", "params", "apiUrl"],
+  setup(props, { emit }) {
+    const router = useRouter();
+    const { proxy } = getCurrentInstance();
+    onMounted(() => {
+      getDetails();
+    });
+    const getDetails = () => {
+      const loading = ElLoading.service({
+        lock: true,
+        text: "数据加载中...",
+        spinner: "el-icon-loading",
+        background: "#fff",
+        target: document.querySelector(".article"),
+      });
+      let params = router.currentRoute.value.query;
+      proxy.$api[props.apiUrl](toRaw(params)).then((res) => {
+        if (res.code === "0") {
+          emit("finish", res.data);
+          loading.close();
+        }
+      });
+    };
+    return {
+      getDetails,
+    };
+  },
 });
 </script>
 <style lang="scss" scoped>
