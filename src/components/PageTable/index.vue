@@ -79,6 +79,14 @@
               >{{ handleItem.text }}
             </el-button>
           </template>
+          <template v-else-if="item.custom === 'href'" #default="scope">
+            <el-button
+              @click="customHrefHandle(item.hrefEvent, scope.row)"
+              type="text"
+              size="small"
+              >{{ scope.row[item.props] }}</el-button
+            >
+          </template>
           <template v-else-if="item.type === 'expand'" #default="scope">
             <slot :scop="scope"></slot>
           </template>
@@ -101,7 +109,9 @@
     <div class="footer-bar-left">footer-bar-left</div>
     <div>
       <el-button @click="getMultipleSelection(true)">批量删除</el-button>
-      <el-button @click="getMultipleSelection(false)" type="primary">批量下载</el-button>
+      <el-button @click="getMultipleSelection(false)" type="primary"
+        >批量下载</el-button
+      >
     </div>
   </div>
 </template>
@@ -128,7 +138,7 @@ export default defineComponent({
     TextDatePickerStartEnd,
   },
   props: ["params", "apiUrl", "show", "config"],
-  emits: ["batchDel","exports"],
+  emits: ["batchDel", "exports"],
   setup(props, { emit }) {
     const multipleTable = ref(null);
     const state = reactive({
@@ -206,6 +216,9 @@ export default defineComponent({
     const customHandle = (currentHandle, row) => {
       currentHandle.event(row);
     };
+    const customHrefHandle = (currentHandle, row) => {
+      currentHandle(row);
+    };
     //表单重置清空
     const resetFields = () => {
       const form = unref(formRef);
@@ -217,8 +230,11 @@ export default defineComponent({
       state.indexs = state.multipleSelection = [];
     };
     const getMultipleSelection = (bool) => {
-      bool?emit("batchDel", state.multipleSelection):emit ("exports",state.multipleSelection)
+      bool
+        ? emit("batchDel", state.multipleSelection)
+        : emit("exports", state.multipleSelection);
     };
+
     return {
       ...toRefs(state),
       isCollapse,
@@ -235,6 +251,7 @@ export default defineComponent({
       handleSelectionChange,
       handleSelectCancel,
       customHandle,
+      customHrefHandle,
       resetFields,
     };
   },

@@ -159,9 +159,20 @@ export default defineComponent({
             label: "序号",
           },
           {
+            props: "title",
+            label: "标题",
+            custom: "href",
+            hrefEvent: ({ id }) => {
+              router.push({
+                path: `/article/list/details`,
+                query: { id: id },
+              });
+            },
+            align: "left",
+          },
+          {
             props: "createUser",
             label: "姓名",
-            custom: "createUser",
             align: "left",
           },
           {
@@ -187,15 +198,11 @@ export default defineComponent({
               {
                 text: "编辑",
                 type: "text",
-                event: (row) => {
-                  eidt(row);
-                },
-              },
-              {
-                text: "详情",
-                type: "text",
-                event: (row) => {
-                  bindleView(row);
+                event: ({ id }) => {
+                  router.push({
+                    path: `/article/list/edit`,
+                    query: { id: id },
+                  });
                 },
               },
               {
@@ -212,22 +219,10 @@ export default defineComponent({
       },
       tableData: [],
     });
-    const bindleView = ({ id }) => {
-      router.push({
-        path: `/article/list/details`,
-        query: { id: id },
-      });
-    };
-    const eidt = ({ id }) => {
-      router.push({
-        path: `/article/list/edit`,
-        query: { id: id },
-      });
-    };
     //导出
-    const exports = ()=>{
-      console.log('批量导出')
-    }
+    const exports = () => {
+      console.log("批量导出");
+    };
     //批量删除/单个删除
     const del = (val) => {
       let params = Array.isArray(val)
@@ -270,8 +265,6 @@ export default defineComponent({
       ...toRefs(state),
       isTrue,
       tableRef,
-      bindleView,
-      eidt,
       del,
       exports,
     };
