@@ -106,7 +106,7 @@
   >
   </el-pagination>
   <div v-if="indexs.length != 0" class="page-table-footer-bar">
-    <div class="footer-bar-left">footer-bar-left</div>
+    <div class="footer-bar-left"></div>
     <div>
       <el-button @click="getMultipleSelection(true)">批量删除</el-button>
       <el-button @click="getMultipleSelection(false)" type="primary"
@@ -234,7 +234,6 @@ export default defineComponent({
         ? emit("batchDel", state.multipleSelection)
         : emit("exports", state.multipleSelection);
     };
-
     return {
       ...toRefs(state),
       isCollapse,
@@ -297,6 +296,9 @@ export default defineComponent({
   background-color: white;
   padding: 15px;
   border-radius: 4px;
+  .header-row-class-name th{
+    background-color: #fafafa;
+  }
   .el-alert {
     margin-bottom: 15px;
   }
