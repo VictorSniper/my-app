@@ -2,6 +2,7 @@
   <page-details
     :params="params"
     :config="config"
+    :loading="loading"
     apiUrl="getRedBlackList"
     @finish="finish"
   ></page-details>
@@ -16,6 +17,13 @@ export default defineComponent({
   setup() {
     const state = reactive({
       params: {},
+      loading: {
+        lock: true,
+        text: "数据加载中...",
+        spinner: "el-icon-loading",
+        background: "#fff",
+        target: ".article",
+      },
       //搜索表单配置
       config: [
         {

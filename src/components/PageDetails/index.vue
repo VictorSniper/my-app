@@ -15,26 +15,25 @@
   </div>
 </template>
 <script>
-import { defineComponent, getCurrentInstance, onMounted, toRaw } from "vue";
-import { useRouter } from "vue-router";
+import {
+  defineComponent,
+  getCurrentInstance,
+  onMounted,
+  toRaw,
+} from "vue";
+import { useRoute } from "vue-router";
 import { ElLoading } from "element-plus";
 export default defineComponent({
-  props: ["config", "params", "apiUrl"],
+  props: ["config", "params", "apiUrl", "loading"],
   setup(props, { emit }) {
-    const router = useRouter();
+    const route = useRoute();
     const { proxy } = getCurrentInstance();
     onMounted(() => {
       getDetails();
     });
     const getDetails = () => {
-      const loading = ElLoading.service({
-        lock: true,
-        text: "数据加载中...",
-        spinner: "el-icon-loading",
-        background: "#fff",
-        target: document.querySelector(".article"),
-      });
-      let params = router.currentRoute.value.query;
+      const loading = ElLoading.service(props.loading);
+      let params = toRaw(route.query);
       proxy.$api[props.apiUrl](toRaw(params)).then((res) => {
         if (res.code === "0") {
           emit("finish", res.data);

@@ -2,6 +2,7 @@
   <page-edit
     :params="params"
     :config="config"
+    :loading="loading"
     apiUrl="getRedBlackList"
     @finish="finish"
   ></page-edit>
@@ -20,6 +21,13 @@ export default defineComponent({
         title: "",
         endTime: "",
         createUserId: "",
+      },
+      loading: {
+        lock: true,
+        text: "数据加载中...",
+        spinner: "el-icon-loading",
+        background: "#fff",
+        target: ".article",
       },
       //搜索表单配置
       config: [
