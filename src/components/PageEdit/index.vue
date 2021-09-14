@@ -8,9 +8,6 @@
         border
         :column="4"
       >
-        <template #extra>
-          <el-button type="primary" size="small">返回</el-button>
-        </template>
         <template v-for="field in config" :key="field.name">
           <el-descriptions-item>
             <template #label>

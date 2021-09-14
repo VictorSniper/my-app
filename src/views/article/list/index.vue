@@ -9,10 +9,21 @@
       @batchDel="del"
       @exports="exports"
     ></page-table>
+    <page-form-dialog
+      title="参数设置"
+      :isEdit="true"
+      :formData="formData"
+      :formConfig="formDialogConfig"
+      :apiUrl="apiUrl"
+      dialogWidth="30%"
+      @handleCancel="handleDialogCancel"
+      @handleSave="handleDialogSave"
+    ></page-form-dialog>
   </div>
   <router-view></router-view>
 </template>
 <script>
+import PageFormDialog from "@/components/PageFormDialog";
 import { ElMessageBox } from "element-plus";
 import PageTable from "@/components/PageTable";
 import { useRouter } from "vue-router";
@@ -25,14 +36,17 @@ import {
   ref,
   unref,
   computed,
+  provide,
 } from "vue";
 export default defineComponent({
   components: {
     PageTable,
+    PageFormDialog,
   },
   setup() {
     const store = useStore();
     const router = useRouter();
+    const dialogFormVisible = ref(false);
     const isTrue = computed(() => store.state.isTrue);
     const { proxy } = getCurrentInstance();
     const tableRef = ref(null);
@@ -206,6 +220,14 @@ export default defineComponent({
                 },
               },
               {
+                text: "设置",
+                type: "text",
+                event: (row) => {
+                  //处理删除
+                  settings(row);
+                },
+              },
+              {
                 text: "删除",
                 type: "text",
                 event: (row) => {
@@ -218,6 +240,54 @@ export default defineComponent({
         ],
       },
       tableData: [],
+      formData: {},
+      formDialogConfig: [
+        {
+          name: "createUser",
+          fieldType: "text-input",
+          attrs: {
+            label: "姓名",
+            labelWidth: "45px",
+            placeholder: "请填写",
+            type: "text", //表单类型
+            rules: [
+              { required: true, message: "请输入活动名称", trigger: "blur" },
+            ],
+            onInputEvent: (val) => {
+              state.formData.createUser = val;
+            },
+          },
+        },
+        {
+          name: "date",
+          fieldType: "text-date-picker",
+          attrs: {
+            label: "时间",
+            labelWidth: "45px",
+            placeholder: "请时间",
+            type: "date", //表单类型
+            dateChange: (val) => {
+              console.log(val);
+              state.formData.date = val;
+            },
+          },
+        },
+        {
+          name: "updateUserId",
+          fieldType: "text-input",
+          attrs: {
+            label: "金额",
+            labelWidth: "45px",
+            placeholder: "请填写",
+            type: "text", //表单类型
+            clearable: true,
+            onInputEvent: (val) => {
+              state.formData.updateUserId = val;
+            },
+          },
+        },
+      ],
+      apiUrl: "getCityCategory",
     });
     //导出
     const exports = () => {
@@ -261,10 +331,28 @@ export default defineComponent({
           console.log(error);
         });
     };
+    const settings = (row) => {
+      dialogFormVisible.value = true;
+      console.log(row);
+      state.formData = row;
+    };
+    const handleDialogCancel = (val) => {
+      dialogFormVisible.value = val;
+    };
+    const handleDialogSave = (val) => {
+      dialogFormVisible.value = val;
+      const table = unref(tableRef);
+      table.getList();
+    };
+    provide("dialogFormVisible", dialogFormVisible);
     return {
       ...toRefs(state),
       isTrue,
       tableRef,
+      dialogFormVisible,
+      handleDialogCancel,
+      handleDialogSave,
+      settings,
       del,
       exports,
     };
