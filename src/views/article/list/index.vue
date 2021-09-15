@@ -230,9 +230,9 @@ export default defineComponent({
               {
                 text: "删除",
                 type: "text",
-                event: (row) => {
+                event: ({id}) => {
                   //处理删除
-                  del(row.id);
+                  del(id);
                 },
               },
             ],
@@ -294,13 +294,13 @@ export default defineComponent({
       console.log("批量导出");
     };
     //批量删除/单个删除
-    const del = (val) => {
-      let params = Array.isArray(val)
-        ? val.map((item) => item.id).toString()
-        : val;
+    const del = (id) => {
+      let params = Array.isArray(id)
+        ? id.map((item) => item.id).toString()
+        : id;
       const table = unref(tableRef);
       ElMessageBox.confirm(
-        Array.isArray(val) ? "您是否需要批量删除?" : "您是否需要删除?",
+        Array.isArray(id) ? "您是否需要批量删除?" : "您是否需要删除?",
         "提示",
         {
           confirmButtonText: "确定",
