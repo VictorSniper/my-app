@@ -16,7 +16,11 @@ instance.interceptors.response.use(
   (response) => {
     const res = response.data;
     if (res.code === "1") {
-      console.log(111);
+      ElMessage({
+        message:"数据异常",
+        type: "error",
+        duration: 5 * 1000,
+      });
     } else {
       return response.data;
     }

@@ -291,7 +291,7 @@ export default defineComponent({
     const getList = () => {
       state.loading = true;
       proxy.$api.getRedBlackList(state.currentApi).then((res) => {
-        if (res.code === "0") {
+        if (res.code === 0) {
           state.totalCount = res.data.totalCount;
           state.tableData = res.data.list;
           state.tableData.map((item) => {

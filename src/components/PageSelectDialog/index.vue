@@ -191,7 +191,7 @@ export default defineComponent({
       let params = Object.assign(state.pageApi, toRaw(props.params));
       state.loading = true;
       proxy.$api[props.apiUrl](params).then((res) => {
-        if (res.code === "0") {
+        if (res.code === 0) {
           state.totalCount = res.data.totalCount;
           state.tableData = res.data.list;
           state.loading = false;
