@@ -3,7 +3,7 @@
     :params="params"
     :config="config"
     :loading="loading"
-    apiUrl="getRedBlackList"
+    apiUrl="getRedBlackList,save"
     @finish="finish"
   ></page-edit>
 </template>

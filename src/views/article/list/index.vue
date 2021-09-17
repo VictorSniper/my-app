@@ -6,6 +6,7 @@
       :show="true"
       apiUrl="getRedBlackList"
       ref="tableRef"
+      @add="add"
       @batchDel="del"
       @exports="exports"
     ></page-table>
@@ -176,7 +177,7 @@ export default defineComponent({
             props: "title",
             label: "标题",
             custom: "href",
-            hrefEvent: ({ id }) => {
+            event: ({ id }) => {
               router.push({
                 path: `/article/list/details`,
                 query: { id: id },
@@ -230,7 +231,7 @@ export default defineComponent({
               {
                 text: "删除",
                 type: "text",
-                event: ({id}) => {
+                event: ({ id }) => {
                   //处理删除
                   del(id);
                 },
@@ -293,6 +294,12 @@ export default defineComponent({
     const exports = () => {
       console.log("批量导出");
     };
+    //添加
+    const add = () => {
+      router.push({
+        path: `/article/list/edit`,
+      });
+    };
     //批量删除/单个删除
     const del = (id) => {
       let params = Array.isArray(id)
@@ -333,7 +340,6 @@ export default defineComponent({
     };
     const settings = (row) => {
       dialogFormVisible.value = true;
-      console.log(row);
       state.formData = row;
     };
     const handleDialogCancel = (val) => {
@@ -353,6 +359,7 @@ export default defineComponent({
       handleDialogCancel,
       handleDialogSave,
       settings,
+      add,
       del,
       exports,
     };

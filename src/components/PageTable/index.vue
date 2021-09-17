@@ -52,6 +52,13 @@
     </div>
   </div>
   <div class="page-content-table">
+           <el-button
+              type="primary"
+              icon="el-icon-plus"
+              class="table-button-plus"
+              @click="handleAdd"
+              >新建</el-button
+            >
     <el-alert
       v-if="indexs.length != 0"
       :title="`您已选择${indexs.length}项`"
@@ -60,6 +67,7 @@
       @close="handleSelectCancel"
     >
     </el-alert>
+
     <el-table
       :data="tableData"
       v-loading="loading"
@@ -81,14 +89,11 @@
           </template>
           <template v-else-if="item.custom === 'href'" #default="scope">
             <el-button
-              @click="customHrefHandle(item.hrefEvent, scope.row)"
+              @click="customHrefHandle(item.event, scope.row)"
               type="text"
               size="small"
               >{{ scope.row[item.props] }}</el-button
             >
-          </template>
-          <template v-else-if="item.type === 'expand'" #default="scope">
-            <slot :scop="scope"></slot>
           </template>
         </el-table-column>
       </template>
@@ -138,7 +143,7 @@ export default defineComponent({
     TextDatePickerStartEnd,
   },
   props: ["params", "apiUrl", "show", "config"],
-  emits: ["batchDel", "exports"],
+  emits: ["batchDel", "exports","add"],
   setup(props, { emit }) {
     const multipleTable = ref(null);
     const state = reactive({
@@ -234,11 +239,15 @@ export default defineComponent({
         ? emit("batchDel", state.multipleSelection)
         : emit("exports", state.multipleSelection);
     };
+    const handleAdd = ()=>{
+      emit('add')
+    };
     return {
       ...toRefs(state),
       isCollapse,
       multipleTable,
       formRef,
+      handleAdd,
       tableRowClassName,
       toggle,
       handleSearch,
@@ -296,7 +305,10 @@ export default defineComponent({
   background-color: white;
   padding: 15px;
   border-radius: 4px;
-  .header-row-class-name th{
+  .table-button-plus{
+        margin-bottom: 15px;
+  }
+  .header-row-class-name th {
     background-color: #fafafa;
   }
   .el-alert {

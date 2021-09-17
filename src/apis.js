@@ -7,6 +7,8 @@ export const getRedBlackList =params=>request('get','/community/redBlackList',pa
 export const getCityCategory =params=>request('get','/api/cityCategory',params)
 //删除
 export const districtDdelete =params=>request('post','/bDistrict/delete',params)
+//保存
+export const save =params=>request('post','/api/save',params)
 
 export const getcustomer =params=>request('get','/api/kkk',params)
 

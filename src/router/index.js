@@ -153,6 +153,21 @@ const routes = [
               index: "/basic/category",
             },
           },
+          {
+            path: "/basic/config",
+            name: "配置参数",
+            index: "basicConfig",
+            key: "2-3",
+            component: () => import("@/views/basic/config"),
+            meta: {
+              title: "配置参数",
+              roles: ["admin"],
+              type: "item",
+              hidden: false,
+              icon: "",
+              index: "/basic/config",
+            },
+          },
         ],
       },
       {

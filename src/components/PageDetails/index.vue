@@ -67,7 +67,7 @@ export default defineComponent({
       const loading = ElLoading.service(props.loading);
       let params = toRaw(route.query);
       proxy.$api[props.apiUrl](toRaw(params)).then((res) => {
-        if (res.code === "0") {
+        if (res.code === 0) {
           emit("finish", res.data);
           loading.close();
         }

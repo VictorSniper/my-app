@@ -34,7 +34,7 @@ import TextSelect from "@/components/BaseField/TextSelect";
 import TextInputSelect from "@/components/BaseField/TextInputSelect";
 import TextDatePicker from "@/components/BaseField/TextDatePicker";
 import TextDatePickerStartEnd from "@/components/BaseField/TextDatePickerStartEnd";
-import { defineComponent, ref, getCurrentInstance, toRaw } from "vue";
+import { defineComponent, ref, getCurrentInstance, toRaw, unref } from "vue";
 export default defineComponent({
   props: [
     "formConfig",
@@ -58,6 +58,7 @@ export default defineComponent({
     const loading = ref(false);
     const submitForm = () => {
       loading.value = true;
+                    const form = unref(formRef);
       formRef.value.validate((valid) => {
         if (valid) {
           let params = toRaw(props.formData);
@@ -66,6 +67,7 @@ export default defineComponent({
               console.log(res.data.list);
               loading.value = false;
               emit("submitForm");
+              form.resetFields();
             }
           });
         } else {
