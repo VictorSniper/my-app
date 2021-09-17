@@ -190,8 +190,8 @@ export default defineComponent({
       state.loading = true;
       proxy.$api[props.apiUrl](params).then((res) => {
         if (res.code === 0) {
-          state.totalCount = res.data.totalCount;
-          state.tableData = res.data.list;
+          state.totalCount = res.totalCount;
+          state.tableData = res.data;
           state.loading = false;
         }
       });

@@ -10,5 +10,5 @@ export const districtDdelete =params=>request('post','/bDistrict/delete',params)
 //保存
 export const save =params=>request('post','/api/save',params)
 
-export const getcustomer =params=>request('get','/api/kkk',params)
+export const todos =params=>request('get','http://localhost:3000/todos',params)
 

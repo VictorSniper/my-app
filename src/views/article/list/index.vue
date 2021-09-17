@@ -4,7 +4,7 @@
       :params="searchFormData"
       :config="config"
       :show="true"
-      apiUrl="getRedBlackList"
+      apiUrl="todos"
       ref="tableRef"
       @add="add"
       @batchDel="del"
@@ -174,7 +174,7 @@ export default defineComponent({
             label: "序号",
           },
           {
-            props: "title",
+            props: "name",
             label: "标题",
             custom: "href",
             event: ({ id }) => {
@@ -186,23 +186,23 @@ export default defineComponent({
             align: "left",
           },
           {
-            props: "createUser",
+            props: "description",
             label: "姓名",
             align: "left",
           },
           {
-            props: "updateTime",
-            label: "课程时间",
-            custom: "updateTime",
+            props: "reg_date",
+            label: "注册时间",
+            custom: "reg_date",
             align: "left",
           },
           {
-            props: "createUserId",
+            props: "isFinished",
             label: "金额",
-            custom: "createUserId",
+            custom: "isFinished",
             align: "right",
             formatter: (row) => {
-              return `¥${row["createUserId"]}`;
+              return `¥${row["isFinished"]}`;
             },
           },
           {
