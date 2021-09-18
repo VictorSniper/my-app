@@ -38,5 +38,5 @@ export default function(method, url, data = null) {
   method = method.toLowerCase();
   return method == "post"
     ? instance.post(url, data)
-    : instance.get(url, { params: data });
+    : method ==="put" ? instance.put(url,data):instance.get(url, { params: data });
 }

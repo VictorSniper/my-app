@@ -2,6 +2,7 @@
   <el-form-item v-bind="$attrs" :prop="name">
     <el-date-picker
       v-model="datePickerValue"
+      value-format="YYYY-MM-DD"
       @change="dateSelectChange"
       placeholder="选择日期"
     >

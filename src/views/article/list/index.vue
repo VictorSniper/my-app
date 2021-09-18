@@ -4,7 +4,7 @@
       :params="searchFormData"
       :config="config"
       :show="true"
-      apiUrl="getRedBlackList"
+      apiUrl="article"
       ref="tableRef"
       @add="add"
       @batchDel="del"
@@ -15,7 +15,7 @@
       :isEdit="true"
       :formData="formData"
       :formConfig="formDialogConfig"
-      :apiUrl="apiUrl"
+      apiUrl="articleEdit"
       dialogWidth="30%"
       @handleCancel="handleDialogCancel"
       @handleSave="handleDialogSave"
@@ -24,6 +24,7 @@
   <router-view></router-view>
 </template>
 <script>
+import * as moment from "moment";
 import PageFormDialog from "@/components/PageFormDialog";
 import { ElMessageBox } from "element-plus";
 import PageTable from "@/components/PageTable";
@@ -174,8 +175,8 @@ export default defineComponent({
             label: "序号",
           },
           {
-            props: "createOrg",
-            label: "标题",
+            props: "name",
+            label: "姓名",
             custom: "href",
             event: ({ id }) => {
               router.push({
@@ -186,42 +187,36 @@ export default defineComponent({
             align: "left",
           },
           {
-            props: "description",
-            label: "姓名",
+            props: "password",
+            label: "密码",
             align: "left",
           },
           {
             props: "reg_date",
             label: "注册时间",
             custom: "reg_date",
-            align: "left",
-          },
-          {
-            props: "isFinished",
-            label: "金额",
-            custom: "isFinished",
-            align: "right",
             formatter: (row) => {
-              return `¥${row["isFinished"]}`;
+              return moment(row["reg_date"]).format("yyyy-MM-DD");
             },
+            align: "left",
           },
           {
             props: "handle",
             label: "操作",
             align: "right",
             handleEvent: [
+              // {
+              //   text: "编辑",
+              //   type: "text",
+              //   event: ({ id }) => {
+              //     router.push({
+              //       path: `/article/list/edit`,
+              //       query: { id: id },
+              //     });
+              //   },
+              // },
               {
                 text: "编辑",
-                type: "text",
-                event: ({ id }) => {
-                  router.push({
-                    path: `/article/list/edit`,
-                    query: { id: id },
-                  });
-                },
-              },
-              {
-                text: "设置",
                 type: "text",
                 event: (row) => {
                   //处理删除
@@ -244,7 +239,7 @@ export default defineComponent({
       formData: {},
       formDialogConfig: [
         {
-          name: "createUser",
+          name: "name",
           fieldType: "text-input",
           attrs: {
             label: "姓名",
@@ -255,12 +250,26 @@ export default defineComponent({
               { required: true, message: "请输入活动名称", trigger: "blur" },
             ],
             onInputEvent: (val) => {
-              state.formData.createUser = val;
+              state.formData.name = val;
             },
           },
         },
         {
-          name: "date",
+          name: "password",
+          fieldType: "text-input",
+          attrs: {
+            label: "密码",
+            labelWidth: "45px",
+            placeholder: "请填写",
+            type: "text", //表单类型
+            clearable: true,
+            onInputEvent: (val) => {
+              state.formData.password = val;
+            },
+          },
+        },
+        {
+          name: "reg_date",
           fieldType: "text-date-picker",
           attrs: {
             label: "时间",
@@ -269,21 +278,7 @@ export default defineComponent({
             type: "date", //表单类型
             dateChange: (val) => {
               console.log(val);
-              state.formData.date = val;
-            },
-          },
-        },
-        {
-          name: "updateUserId",
-          fieldType: "text-input",
-          attrs: {
-            label: "金额",
-            labelWidth: "45px",
-            placeholder: "请填写",
-            type: "text", //表单类型
-            clearable: true,
-            onInputEvent: (val) => {
-              state.formData.updateUserId = val;
+              state.formData.reg_date = val;
             },
           },
         },
@@ -340,12 +335,14 @@ export default defineComponent({
     };
     const settings = (row) => {
       dialogFormVisible.value = true;
+      row.reg_date=moment(row.reg_date).format("yyyy-MM-DD");
       state.formData = row;
     };
     const handleDialogCancel = (val) => {
       dialogFormVisible.value = val;
     };
     const handleDialogSave = (val) => {
+      console.log("111");
       dialogFormVisible.value = val;
       const table = unref(tableRef);
       table.getList();

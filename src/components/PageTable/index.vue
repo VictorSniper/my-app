@@ -184,13 +184,12 @@ export default defineComponent({
       getList();
     };
     const getList = () => {
-      console.log(1)
       let params = Object.assign(state.pageApi, toRaw(props.params));
       state.loading = true;
       proxy.$api[props.apiUrl](params).then((res) => {
         if (res.code === 0) {
           state.totalCount = res.totalCount;
-          state.tableData = res.data.list;
+          state.tableData = res.data;
           state.loading = false;
         }
       });

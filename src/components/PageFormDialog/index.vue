@@ -93,7 +93,7 @@ export default defineComponent({
           percentage.value = 100;
           indeterminate.value = true;
           proxy.$api[props.apiUrl](params).then((res) => {
-            if (res.code === "0") {
+            if (res.code === 0) {
               percentage.value = 0;
                         emit("handleSave", false);
               indeterminate.value = false;
