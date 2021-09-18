@@ -158,9 +158,7 @@ export default defineComponent({
       },
       indexs: [],
     });
-    onMounted(() => {
-      getList();
-    });
+
     const formRef = ref(null);
     const isCollapse = ref(false);
     const { proxy } = getCurrentInstance();
@@ -186,12 +184,13 @@ export default defineComponent({
       getList();
     };
     const getList = () => {
+      console.log(1)
       let params = Object.assign(state.pageApi, toRaw(props.params));
       state.loading = true;
       proxy.$api[props.apiUrl](params).then((res) => {
         if (res.code === 0) {
           state.totalCount = res.totalCount;
-          state.tableData = res.data;
+          state.tableData = res.data.list;
           state.loading = false;
         }
       });
@@ -242,6 +241,9 @@ export default defineComponent({
     const handleAdd = ()=>{
       emit('add')
     };
+        onMounted(() => {
+      getList();
+    });
     return {
       ...toRefs(state),
       isCollapse,

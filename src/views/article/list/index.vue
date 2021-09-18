@@ -4,7 +4,7 @@
       :params="searchFormData"
       :config="config"
       :show="true"
-      apiUrl="todos"
+      apiUrl="getRedBlackList"
       ref="tableRef"
       @add="add"
       @batchDel="del"
@@ -174,7 +174,7 @@ export default defineComponent({
             label: "序号",
           },
           {
-            props: "name",
+            props: "createOrg",
             label: "标题",
             custom: "href",
             event: ({ id }) => {
