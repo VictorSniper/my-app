@@ -95,10 +95,9 @@ export default defineComponent({
           proxy.$api[props.apiUrl](params).then((res) => {
             if (res.code === 0) {
               percentage.value = 0;
-                        emit("handleSave", false);
+              emit("handleSave", false);
               indeterminate.value = false;
               form.resetFields();
-    
             }
           });
         } else {

@@ -52,13 +52,13 @@
     </div>
   </div>
   <div class="page-content-table">
-           <el-button
-              type="primary"
-              icon="el-icon-plus"
-              class="table-button-plus"
-              @click="handleAdd"
-              >新建</el-button
-            >
+    <el-button
+      type="primary"
+      icon="el-icon-plus"
+      class="table-button-plus"
+      @click="handleAdd"
+      >新建</el-button
+    >
     <el-alert
       v-if="indexs.length != 0"
       :title="`您已选择${indexs.length}项`"
@@ -143,7 +143,7 @@ export default defineComponent({
     TextDatePickerStartEnd,
   },
   props: ["params", "apiUrl", "show", "config"],
-  emits: ["batchDel", "exports","add"],
+  emits: ["batchDel", "exports", "add"],
   setup(props, { emit }) {
     const multipleTable = ref(null);
     const state = reactive({
@@ -176,11 +176,14 @@ export default defineComponent({
     const handleSizeChange = (page) => {
       state.pageApi.currentPage = 1;
       state.pageApi.pageSize = page;
+      Object.assign(toRaw(props.params), state.pageApi);
       getList();
     };
     //跳转到当前页
     const handleCurrentChange = (page) => {
       state.pageApi.currentPage = page;
+      let params = Object.assign(toRaw(props.params), state.pageApi);
+      console.log(params);
       getList();
     };
     const getList = () => {
@@ -189,6 +192,7 @@ export default defineComponent({
       proxy.$api[props.apiUrl](params).then((res) => {
         if (res.code === 0) {
           state.totalCount = res.totalCount;
+          console.log(state.totalCount);
           state.tableData = res.data;
           state.loading = false;
         }
@@ -237,10 +241,10 @@ export default defineComponent({
         ? emit("batchDel", state.multipleSelection)
         : emit("exports", state.multipleSelection);
     };
-    const handleAdd = ()=>{
-      emit('add')
+    const handleAdd = () => {
+      emit("add");
     };
-        onMounted(() => {
+    onMounted(() => {
       getList();
     });
     return {
@@ -306,8 +310,8 @@ export default defineComponent({
   background-color: white;
   padding: 15px;
   border-radius: 4px;
-  .table-button-plus{
-        margin-bottom: 15px;
+  .table-button-plus {
+    margin-bottom: 15px;
   }
   .header-row-class-name th {
     background-color: #fafafa;

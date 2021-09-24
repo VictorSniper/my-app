@@ -6,16 +6,16 @@
       :show="true"
       apiUrl="article"
       ref="tableRef"
-      @add="add"
+      @add="openEditModal(false)"
       @batchDel="del"
       @exports="exports"
     ></page-table>
     <page-form-dialog
-      title="参数设置"
-      :isEdit="true"
+      :title="isEdit?'用户编辑':'用户新增'"
+      :isEdit="isEdit"
       :formData="formData"
       :formConfig="formDialogConfig"
-      apiUrl="articleEdit"
+      :apiUrl="apiUrl"
       dialogWidth="30%"
       @handleCancel="handleDialogCancel"
       @handleSave="handleDialogSave"
@@ -26,7 +26,7 @@
 <script>
 import * as moment from "moment";
 import PageFormDialog from "@/components/PageFormDialog";
-import { ElMessageBox } from "element-plus";
+import { ElMessageBox, ElMessage } from "element-plus";
 import PageTable from "@/components/PageTable";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
@@ -55,8 +55,8 @@ export default defineComponent({
     const state = reactive({
       searchFormData: {
         currentPage: 1,
-        pageSize: 15,
-        createUserId: "",
+        pageSize: 10,
+        name: "",
         classTime: "",
         classPrice: "",
       },
@@ -66,7 +66,7 @@ export default defineComponent({
         },
         searchConfig: [
           {
-            name: "createUserId",
+            name: "name",
             fieldType: "text-input",
             width: "auto",
             attrs: {
@@ -75,7 +75,7 @@ export default defineComponent({
               labelWidth: "40px",
               placeholder: "请填写",
               onInputEvent: (val) => {
-                state.searchFormData.createUserId = val;
+                state.searchFormData.name = val;
               },
             },
           },
@@ -220,7 +220,7 @@ export default defineComponent({
                 type: "text",
                 event: (row) => {
                   //处理删除
-                  settings(row);
+                  openEditModal(true, row);
                 },
               },
               {
@@ -235,6 +235,7 @@ export default defineComponent({
           },
         ],
       },
+      isEdit: true,
       tableData: [],
       formData: {},
       formDialogConfig: [
@@ -283,18 +284,13 @@ export default defineComponent({
           },
         },
       ],
-      apiUrl: "getCityCategory",
+      apiUrl: "articleEdit",
     });
     //导出
     const exports = () => {
       console.log("批量导出");
     };
-    //添加
-    const add = () => {
-      router.push({
-        path: `/article/list/edit`,
-      });
-    };
+
     //批量删除/单个删除
     const del = (id) => {
       let params = Array.isArray(id)
@@ -313,9 +309,13 @@ export default defineComponent({
               instance.confirmButtonLoading = true;
               instance.confirmButtonText = "删除中...";
               done();
-              proxy.$api.districtDdelete({ id: params }).then((res) => {
-                if (res.code === "0") {
+              proxy.$api.articleDelete({ id: params }).then((res) => {
+                if (res.code === 0) {
                   instance.confirmButtonLoading = false;
+                  ElMessage.success({
+                    message: res.message,
+                    type: "success",
+                  });
                   table.getList();
                   table.handleSelectCancel();
                 }
@@ -333,18 +333,23 @@ export default defineComponent({
           console.log(error);
         });
     };
-    const settings = (row) => {
+    const openEditModal = (isEdit, row={}) => {
       dialogFormVisible.value = true;
-      row.reg_date=moment(row.reg_date).format("yyyy-MM-DD");
-      state.formData = row;
+      row.reg_date = moment(row.reg_date).format("yyyy-MM-DD");
+      state.apiUrl = isEdit ? "articleEdit" : "articleAdd";
+      state.isEdit = isEdit;
+      state.formData = isEdit ? row : {};
     };
     const handleDialogCancel = (val) => {
+                 const table = unref(tableRef);
       dialogFormVisible.value = val;
+      state.formData = {};
+           table.getList();
     };
     const handleDialogSave = (val) => {
-      console.log("111");
       dialogFormVisible.value = val;
       const table = unref(tableRef);
+      state.formData = {};
       table.getList();
     };
     provide("dialogFormVisible", dialogFormVisible);
@@ -355,8 +360,7 @@ export default defineComponent({
       dialogFormVisible,
       handleDialogCancel,
       handleDialogSave,
-      settings,
-      add,
+      openEditModal,
       del,
       exports,
     };
